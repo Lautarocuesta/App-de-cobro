@@ -13,6 +13,14 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
 
+    # Importa tu modelo User después de inicializar db y login_manager
+    from .models import User
+
+    # Definir la función load_user para cargar el usuario desde la base de datos
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     with app.app_context():
         db.create_all()
 
