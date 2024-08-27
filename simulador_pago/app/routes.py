@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from app import db
 from app.forms import RegistrationForm, LoginForm
 from app.models import User
@@ -36,3 +36,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+def cobro():
+    return render_template('cobro.html')
