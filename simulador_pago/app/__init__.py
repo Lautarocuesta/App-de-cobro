@@ -18,7 +18,7 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'main.login'
 
     from .models import User
 
@@ -29,12 +29,8 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-        from .routes import home, register, login, logout, cobro
-
-        app.add_url_rule('/', 'home', home)
-        app.add_url_rule('/register', 'register', register, methods=['GET', 'POST'])
-        app.add_url_rule('/login', 'login', login, methods=['GET', 'POST'])
-        app.add_url_rule('/logout', 'logout', logout)
-        app.add_url_rule('/cobro', 'cobro', cobro)
+    # Importar y registrar las rutas
+    from .routes import main
+    app.register_blueprint(main)
 
     return app
