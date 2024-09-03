@@ -8,20 +8,23 @@ import mercadopago
 # MercadoPago SDK
 sdk = mercadopago.SDK("YOUR_ACCESS_TOKEN")
 
+# Datos de productos de ejemplo
+products = [
+    {'id': 1, 'name': 'Producto 1', 'price': 50.0, 'stock': 10},
+    {'id': 2, 'name': 'Producto 2', 'price': 100.0, 'stock': 5}
+]
+
 # Datos de pedidos de ejemplo
 orders = [
-    {'id': 1, 'total': 100.0},
-    {'id': 2, 'total': 150.0}
+    {'id': 1, 'total': 100.0, 'products': products},
+    {'id': 2, 'total': 150.0, 'products': products}
 ]
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def home():
-    # Crear preferencias de pago y devolver los IDs
-    for order in orders:
-        order['preference_id'] = crear_preferencia(order['total'], f"Compra de Producto {order['id']}", f"ORDER{order['id']}")
-    return render_template('cobro.html', orders=orders)
+    return render_template('home.html')
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -56,11 +59,20 @@ def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
+@main.route('/test_redirect')
+def test_redirect():
+    return redirect(url_for('main.home'))
+
 @main.route('/cobro')
+@login_required
 def cobro():
-    return render_template('cobro.html')
+    for order in orders:
+        order['preference_id'] = crear_preferencia(order['total'], f"Compra de Producto {order['id']}", f"ORDER{order['id']}")
+    return render_template('cobro.html', orders=orders)
+
 
 @main.route('/process_payment', methods=['POST'])
+@login_required
 def process_payment():
     data = request.get_json()
     request_options = mercadopago.config.RequestOptions()
@@ -105,6 +117,6 @@ def crear_preferencia(amount, description, external_reference):
     try:
         preference_response = sdk.preference().create(preference_data)
         return preference_response['response']['id']
-    except mercadopago.exceptions.MercadoPagoError as e:
+    except Exception as e:
         print(f"Error al crear la preferencia: {e}")
         return None
