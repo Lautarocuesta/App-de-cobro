@@ -3,136 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Cobro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- SDK MercadoPago.js -->
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <title>Formulario de Pago</title>
     <style>
-        .container {
-            max-width: 800px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        .product-card {
-            border: 1px solid #ddd;
+
+        #payment-form-container {
+            background: #fff;
+            padding: 20px;
             border-radius: 8px;
-            padding: 16px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
             margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            color: #007bff;
         }
-        .product-card h3 {
-            margin-bottom: 10px;
+
+        #form-checkout {
+            display: flex;
+            flex-direction: column;
         }
-        .product-card button {
+
+        .container {
+            margin-bottom: 15px;
+        }
+
+        .container input,
+        .container select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
             margin-top: 10px;
         }
-        .form-checkout__container {
-            margin-bottom: 1rem;
+
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
-        .form-checkout__container label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .form-checkout__container input,
-        .form-checkout__container select,
-        .form-checkout__container div {
-            height: 40px;
-        }
+
         .progress-bar {
             width: 100%;
-            height: 2px;
-        }
-        .form-checkout__button {
-            margin-top: 1rem;
-        }
-        .form-checkout__hidden {
+            height: 10px;
+            border-radius: 4px;
+            background-color: #ddd;
+            margin-top: 10px;
             display: none;
+        }
+
+        .progress-bar[value] {
+            display: block;
+            background-color: #007bff;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Simulador de Cobro</h1>
-
-        <!-- Botón de Cerrar Sesión -->
-        <a href="{{ url_for('main.test_redirect') }}" class="btn btn-danger btn-lg">Cerrar Sesión</a>
-        
-        <!-- Icono de Carrito -->
-        <div id="cart-icon" class="position-relative" style="cursor: pointer;">
-            🛒 <span id="cart-count" class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill">0</span>
-        </div>
-
-        <!-- Lista de Productos -->
-        <div id="product-list">
-            <!-- Cuadrado de Producto 1 -->
-            <div class="prod    uct-card">
-                <h3>Producto 1</h3>
-                <p>Precio: $50.00</p>
-                <button class="btn btn-primary add-to-cart" data-product-id="1" data-product-name="Producto 1" data-product-price="50.00">Agregar al carrito</button>
-            </div>
-
-            <!-- Cuadrado de Producto 2 -->
-            <div class="product-card">
-                <h3>Producto 2</h3>
-                <p>Precio: $100.00</p>
-                <button class="btn btn-primary add-to-cart" data-product-id="2" data-product-name="Producto 2" data-product-price="100.00">Agregar al carrito</button>
-            </div>
-        </div>
-
-        <!-- Sección de Carrito y Pago -->
-        <div id="cart-container" class="mt-5" style="display: none;">
-            <h2>Carrito</h2>
-            <ul id="cart-items" class="list-group mb-3"></ul>
-            <button id="checkout-button" class="btn btn-success" style="display: none;">Pagar</button>
-        </div>
-
-        <!-- Formulario de Pago -->
-        <div id="payment-form-container" class="mt-5" style="display: none;">
-            <h2>Formulario de Pago</h2>
-            <form id="form-checkout" class="bg-light p-4 rounded shadow-sm">
-                <div class="form-group mb-3">
-                    <label for="form-checkout__cardNumber">Número de Tarjeta</label>
-                    <input type="text" id="form-checkout__cardNumber" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__expirationDate">Fecha de Expiración</label>
-                    <input type="text" id="form-checkout__expirationDate" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__securityCode">Código de Seguridad</label>
-                    <input type="text" id="form-checkout__securityCode" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__cardholderName">Nombre en la Tarjeta</label>
-                    <input type="text" id="form-checkout__cardholderName" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__cardholderEmail">Email</label>
-                    <input type="email" id="form-checkout__cardholderEmail" class="form-control" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__issuer">Emisor</label>
-                    <select id="form-checkout__issuer" class="form-control"></select>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__installments">Cuotas</label>
-                    <select id="form-checkout__installments" class="form-control"></select>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__identificationType">Tipo de Documento</label>
-                    <select id="form-checkout__identificationType" class="form-control"></select>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="form-checkout__identificationNumber">Número de Documento</label>
-                    <input type="text" id="form-checkout__identificationNumber" class="form-control" />
-                </div>
-                <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar</button>
-                <progress value="0" class="mt-3"></progress>
-            </form>
-        </div>
+    <div id="payment-form-container">
+        <h2>Formulario de Pago</h2>
+        <form id="form-checkout">
+            <div id="form-checkout__cardNumber" class="container"></div>
+            <div id="form-checkout__expirationDate" class="container"></div>
+            <div id="form-checkout__securityCode" class="container"></div>
+            <input type="text" id="form-checkout__cardholderName" placeholder="Titular de la tarjeta" class="form-control" />
+            <select id="form-checkout__issuer" class="form-control"></select>
+            <select id="form-checkout__installments" class="form-control"></select>
+            <select id="form-checkout__identificationType" class="form-control"></select>
+            <input type="text" id="form-checkout__identificationNumber" placeholder="Número del documento" class="form-control" />
+            <input type="email" id="form-checkout__cardholderEmail" placeholder="E-mail" class="form-control" />
+            <button type="submit" id="form-checkout__submit" class="btn-primary">Pagar</button>
+            <progress value="0" class="progress-bar">Cargando...</progress>
+        </form>
     </div>
+
     <script src="https://sdk.mercadopago.com/js/v2"></script>
-    <script src="/static/js/cobro.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inicializa MercadoPago con tu clave pública
+            const mp = new MercadoPago("TEST-c4be1125-b477-447e-994d-3828699e2e57");
+
+            // Inicializa el formulario de pago
+            const cardForm = mp.cardForm({
+                amount: "100.5", // Puedes definir una cantidad predeterminada o dejarlo vacío si es necesario
+                iframe: true,
+                form: {
+                    id: "form-checkout",
+                    cardNumber: {
+                        id: "form-checkout__cardNumber",
+                        placeholder: "Número de tarjeta",
+                    },
+                    expirationDate: {
+                        id: "form-checkout__expirationDate",
+                        placeholder: "MM/YY",
+                    },
+                    securityCode: {
+                        id: "form-checkout__securityCode",
+                        placeholder: "Código de seguridad",
+                    },
+                    cardholderName: {
+                        id: "form-checkout__cardholderName",
+                        placeholder: "Titular de la tarjeta",
+                    },
+                    issuer: {
+                        id: "form-checkout__issuer",
+                        placeholder: "Banco emisor",
+                    },
+                    installments: {
+                        id: "form-checkout__installments",
+                        placeholder: "Cuotas",
+                    },
+                    identificationType: {
+                        id: "form-checkout__identificationType",
+                        placeholder: "Tipo de documento",
+                    },
+                    identificationNumber: {
+                        id: "form-checkout__identificationNumber",
+                        placeholder: "Número del documento",
+                    },
+                    cardholderEmail: {
+                        id: "form-checkout__cardholderEmail",
+                        placeholder: "E-mail",
+                    },
+                },
+                callbacks: {
+                    onFormMounted: error => {
+                        if (error) return console.warn("Form Mounted handling error: ", error);
+                        console.log("Form mounted");
+                    },
+                    onSubmit: event => {
+                        event.preventDefault();
+
+                        const {
+                            paymentMethodId: payment_method_id,
+                            issuerId: issuer_id,
+                            cardholderEmail: email,
+                            amount,
+                            token,
+                            installments,
+                            identificationNumber,
+                            identificationType,
+                        } = cardForm.getCardFormData();
+
+                        fetch("/process_payment", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                token,
+                                issuer_id,
+                                payment_method_id,
+                                transaction_amount: Number(amount),
+                                installments: Number(installments),
+                                description: "Descripción del producto",
+                                payer: {
+                                    email,
+                                    identification: {
+                                        type: identificationType,
+                                        number: identificationNumber,
+                                    },
+                                },
+                            }),
+                        }).then(response => response.json())
+                          .then(data => {
+                              if (data.status === "approved") {
+                                  alert("Pago aprobado!");
+                              } else {
+                                  alert("Error en el pago.");
+                              }
+                          }).catch(error => {
+                              console.error("Error en la solicitud de pago:", error);
+                          });
+
+                        // Mostrar la barra de progreso
+                        const progressBar = document.querySelector(".progress-bar");
+                        progressBar.style.display = "block";
+                        progressBar.removeAttribute("value");
+
+                        return () => {
+                            progressBar.setAttribute("value", "0");
+                        };
+                    },
+                    onFetching: (resource) => {
+                        console.log("Fetching resource: ", resource);
+                        // Animate progress bar
+                    }
+                },
+            });
+        });
+    </script>
 </body>
 </html>

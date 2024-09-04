@@ -18,3 +18,9 @@ class ProductForm(FlaskForm):
     price = FloatField('Price', validators=[DataRequired()])
     stock = IntegerField('Stock', validators=[DataRequired()])
     submit = SubmitField('Add Product')
+
+class PaymentForm(FlaskForm):
+    card_number = StringField('Número de Tarjeta', validators=[DataRequired()])
+    expiration_date = StringField('Fecha de Expiración (MM/YYYY)', validators=[DataRequired()])
+    security_code = StringField('Código de Seguridad', validators=[DataRequired()])
+    submit = SubmitField('Pagar')
