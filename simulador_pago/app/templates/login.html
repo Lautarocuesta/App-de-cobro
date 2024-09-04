@@ -66,7 +66,7 @@
         <h1>Iniciar Sesión</h1>
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <form method="POST" action="{{ url_for('login.main') }}">
+                <form method="POST" action="{{ url_for('main.login') }}">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
                         {{ form.email.label(class="form-label") }}
@@ -79,7 +79,7 @@
                     <div class="text-center">
                         {{ form.submit(class="btn btn-primary btn-lg") }}
                     </div>
-                </form>                         
+                </form>                
             </div>
         </div>
     </div>

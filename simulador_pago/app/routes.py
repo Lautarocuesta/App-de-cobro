@@ -42,17 +42,23 @@ def register():
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.cobro'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.password == form.password.data:
             login_user(user)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            print(f"Next page: {next_page}")  # Imprime el valor de next
+            if next_page and next_page != url_for('main.login'):
+                return redirect(next_page)
+            else:
+                return redirect(url_for('main.cobro'))
         else:
             flash('Error al iniciar sesión. Verifica tu correo y contraseña.', 'danger')
     return render_template('login.html', title='Iniciar Sesión', form=form)
+
+
 
 @main.route('/logout')
 def logout():
