@@ -9,10 +9,10 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     
-    username = 'u227ypgl485hfs3b'
-    password = 'v0Lovy3aFm6KSUcNphbi'
-    hostname = 'bsaf3ulb51roa33cb86b-mysql.services.clever-cloud.com'
-    database = 'bsaf3ulb51roa33cb86b'
+    username = 'upsdbxna2ziitiwo'
+    password = '8ittRtvlqvMqqK239Ujl'
+    hostname = 'bi6eeygebg4oqzyflcde-mysql.services.clever-cloud.com'
+    database = 'bi6eeygebg4oqzyflcde'
     app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{username}:{password}@{hostname}/{database}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -6,7 +6,7 @@ import mercadopago
 from app.forms import RegistrationForm, LoginForm, ProductForm, PaymentForm
 
 # MercadoPago SDK
-sdk = mercadopago.SDK("TEST-8055980577857914-090417-cc2d8b33369e1a9dbd5453ec2bbb6ca5-1487926782")
+sdk = mercadopago.SDK("TEST-3727573019792359-082715-20105548c6dd3fd578d57c7c80bca7d8-1194947549")
 
 # Datos de productos de ejemplo
 products = [
